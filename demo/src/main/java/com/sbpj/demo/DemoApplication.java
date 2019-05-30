@@ -1,6 +1,10 @@
 package com.sbpj.demo;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class DemoApplication {
 
+//	@Autowired
+//	private CounterService counterService;
 	/**
 	 * 主函数，启动类
 	 * @param args
@@ -24,6 +30,17 @@ public class DemoApplication {
 		return "Hello battcn";
 	}
 
+//	@Bean
+//    MeterRegistryCustomizer<MeterRegistry> configurer(
+//            @Value("${spring.application.name}") String applicationName) {
+//	    return (registry) -> registry.config().commonTags("application", applicationName);
+//    }
+
+//	@GetMapping("/count")
+//	public String count() {
+//		countService.increment("sbpj.demo.count");
+//		return "";
+//	}
 //	@Bean
 //	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 //		// 目的是

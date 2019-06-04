@@ -60,7 +60,7 @@ public class EurekaClientApplication {
         List<ServiceInstance> list = client.getInstances(registration.getServiceId());
         if (null != list && list.size() > 0) {
             for (ServiceInstance itm : list) {
-                if (itm.getPort() == 8080)
+                if (itm.getPort() == 8080 || itm.getPort() == 8081 || itm.getPort() == 8082)
                     return itm;
             }
         }

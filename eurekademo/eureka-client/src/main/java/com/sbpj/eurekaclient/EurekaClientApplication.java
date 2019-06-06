@@ -13,6 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -55,6 +56,15 @@ public class EurekaClientApplication {
 
         return "From Service-A, " + result;
 	}
+
+    @RequestMapping(value = "/testEx", method = RequestMethod.GET)
+    public String testEx(@RequestParam String pjName) {
+        ServiceInstance instance = serviceInstance();
+        String result = "/test, host:" + instance.getHost() + ", service_id:" + instance.getServiceId();
+        logger.info(result);
+
+        return "From " + pjName + "：" + result;
+    }
 
 	public ServiceInstance serviceInstance() {
         List<ServiceInstance> list = client.getInstances(registration.getServiceId());

@@ -3,6 +3,7 @@ package com.sbpj.eurekaclient;
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
 
+import com.sbpj.commons.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -11,10 +12,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,6 +42,10 @@ public class EurekaClientApplication {
 		SpringApplication.run(EurekaClientApplication.class, args);
 	}
 
+    /**
+     * 服务发现与消费
+     * @return
+     */
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test() {
 	    // 过期方法
@@ -57,13 +59,48 @@ public class EurekaClientApplication {
         return "From Service-A, " + result;
 	}
 
+    /**
+     * GET请求
+     * @param pjName
+     * @return String
+     */
     @RequestMapping(value = "/testEx", method = RequestMethod.GET)
     public String testEx(@RequestParam String pjName) {
         ServiceInstance instance = serviceInstance();
-        String result = "/test, host:" + instance.getHost() + ", service_id:" + instance.getServiceId();
+        String result = "/testEx, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", port:" + instance.getPort();
         logger.info(result);
 
         return "From " + pjName + "：" + result;
+    }
+
+
+    /**
+     * GET请求
+     * @param pjName
+     * @return 自定义类型User
+     */
+    @RequestMapping(value = "/testUser", method = RequestMethod.GET)
+    public User testUser(@RequestParam String pjName) {
+        User user = new User();
+        ServiceInstance instance = serviceInstance();
+
+        user.setUserName("From " + pjName);
+        user.setHost(instance.getHost());
+        user.setServiceId(instance.getServiceId());
+        user.setPort(instance.getPort());
+        return user;
+    }
+
+    @RequestMapping(value = "/testPost", method = RequestMethod.POST)
+    public User testPost(@RequestBody User user, String pjName) {
+
+        ServiceInstance instance = serviceInstance();
+        user.setUserName(user.getUserName() + pjName);
+        user.setHost(instance.getHost());
+        user.setServiceId(instance.getServiceId());
+        user.setPort(instance.getPort());
+
+        return user;
     }
 
 	public ServiceInstance serviceInstance() {

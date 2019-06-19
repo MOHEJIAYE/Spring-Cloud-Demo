@@ -103,6 +103,34 @@ public class EurekaClientApplication {
         return user;
     }
 
+    @RequestMapping(value = "/testPostEx", method = RequestMethod.POST)
+    public String testPostEx(@RequestParam String userName, String pjName) {
+        ServiceInstance instance = serviceInstance();
+        String result = userName + pjName + ", /testPostEx, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", port:" + instance.getPort();
+
+        return result;
+    }
+
+    @RequestMapping(value = "/testPut", method = RequestMethod.PUT)
+    public void testPut(@RequestBody User user, String pjName) {
+        ServiceInstance instance = serviceInstance();
+        user.setUserName(user.getUserName() + pjName);
+        user.setHost(instance.getHost());
+        user.setServiceId(instance.getServiceId());
+        user.setPort(instance.getPort());
+
+        logger.info("++++++++++++++++ Put");
+    }
+
+    @RequestMapping(value = "/testDelete", method = RequestMethod.DELETE)
+    public void testDelete(@RequestParam String pjName) {
+        ServiceInstance instance = serviceInstance();
+
+        String result = "From " + pjName + ", /testPostEx, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", port:" + instance.getPort();
+
+        logger.info("++++++++++++++++ Delete" + result);
+    }
+
 	public ServiceInstance serviceInstance() {
         List<ServiceInstance> list = client.getInstances(registration.getServiceId());
         if (null != list && list.size() > 0) {

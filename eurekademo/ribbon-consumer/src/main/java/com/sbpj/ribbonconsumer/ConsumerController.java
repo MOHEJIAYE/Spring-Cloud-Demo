@@ -3,9 +3,12 @@ package com.sbpj.ribbonconsumer;
 
 import com.sbpj.commons.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -124,13 +127,38 @@ public class ConsumerController {
 
     @RequestMapping(value = "/ribbon-consumer-post", method = RequestMethod.GET)
     public String testConsumerPost() {
-        User user = new User();
-        user.setUserName("From");
-        ResponseEntity<User> responseEntity = restTemplate.postForEntity("http://TEST-SERVICE/testEx?pjName={1}", user, User.class, "sbpj");
-        User body = responseEntity.getBody();
+        //request：普通对象
+//        User user = new User();
+//        user.setUserName("From");
+//        ResponseEntity<User> responseEntity = restTemplate.postForEntity("http://TEST-SERVICE/testPost?pjName={1}", user, User.class, "sbpj");
+//        User body = responseEntity.getBody();
+//
+//        String result = body.getUserName() + ", host: " + body.getHost() + ", service_id: " + body.getServiceId() + ", port: " + body.getPort();
 
-        String result = body.getUserName() + ", host: " + body.getHost() + ", service_id: " + body.getServiceId() + ", port: " + body.getPort();
+        //request:HttpEntity对象
+        HttpHeaders headers = new HttpHeaders();
+        MultiValueMap<String, Object> parammap = new LinkedMultiValueMap<>();
+        parammap.add("userName", "From");
+        HttpEntity<Map> entity = new HttpEntity<>(parammap, headers);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://TEST-SERVICE/testPostEx?pjName={1}", entity, String.class, "sbpj");
+        String result = responseEntity.getBody();
 
         return "post -> " + result;
+    }
+
+    @RequestMapping(value = "/ribbon-consumer-put", method = RequestMethod.GET)
+    public String testConsumerPut() {
+        User user = new User();
+        user.setUserName("From");
+        restTemplate.put("http://TEST-SERVICE/testPut?pjName={1}", user, "sbpj");
+
+        return "put -> void";
+    }
+
+    @RequestMapping(value = "/ribbon-consumer-delete", method = RequestMethod.GET)
+    public String testConsumerDelete() {
+        restTemplate.delete("http://TEST-SERVICE/testDelete?pjName={1}", "sbpj");
+
+        return "delete -> void";
     }
 }

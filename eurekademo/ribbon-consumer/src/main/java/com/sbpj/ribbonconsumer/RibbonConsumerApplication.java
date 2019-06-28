@@ -4,12 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+//import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * @EnableDiscoveryClient注解，注册为Eureka客户端应用，以获得发现服务的能力
+ * @EnableDiscoveryClient：注册为Eureka客户端应用，以获得发现服务的能力
+ * @RibbonClient：指定要使用的具体Configuration类来覆盖自动化配置的默认实现
  */
+//@RibbonClient(name = "test-service", configuration = MyRibbonConfiguration.class)
 @EnableDiscoveryClient
 @SpringBootApplication
 public class RibbonConsumerApplication {

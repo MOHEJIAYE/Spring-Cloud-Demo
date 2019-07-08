@@ -15,6 +15,7 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @EnableDiscoveryClient注解，激活Eureka中的DiscoveryClient实现
@@ -73,6 +74,26 @@ public class EurekaClientApplication {
         return "From " + pjName + "：" + result;
     }
 
+    /**
+     * 模拟服务阻塞
+     * Hystrix默认超时时间为2000毫秒
+     * @param pjName
+     * @return String
+     */
+    @RequestMapping(value = "/testHystrix", method = RequestMethod.GET)
+    public String testHystrix(@RequestParam String pjName) throws Exception {
+        ServiceInstance instance = serviceInstance();
+
+        // 让处理线程等待几秒钟
+        int sleepTime = new Random().nextInt(3000);
+        logger.info("sleepTime: " + sleepTime);
+        Thread.sleep(sleepTime);
+
+        String result = "/testEx, host:" + instance.getHost() + ", service_id:" + instance.getServiceId() + ", port:" + instance.getPort();
+        logger.info(result);
+
+        return "From " + pjName + "：" + result;
+    }
 
     /**
      * GET请求
